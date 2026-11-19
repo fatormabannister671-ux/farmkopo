@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FarmKɔpɔ — Prototype Demo | AbdulTech Innovations</title>
+<style>
+:root{
+  --g9:#123d2a;--g8:#18543a;--g7:#1f6b49;--g5:#2f9467;--g2:#d6efe2;--g1:#eef8f2;
+  --amber:#e2a72e;--amber1:#fff4dc;--red:#c2412d;--red1:#fde8e4;--blue:#2c6fb5;--blue1:#e4effb;
+  --ink:#1d2421;--mut:#5f6b66;--line:#dfe5e2;--bg:#f5f7f6;--card:#fff;
+  --r:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:14px;line-height:1.45}
+header{background:var(--g9);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px}
+.logo svg{flex:none}
+.logo small{display:block;font-weight:400;font-size:12px;opacity:.8}
+.badge-demo{margin-left:auto;background:var(--amber);color:#2b1d00;font-weight:600;font-size:12px;padding:4px 10px;border-radius:20px}
+nav{display:flex;gap:6px;padding:10px 22px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap;position:sticky;top:0;z-index:5}
+nav button{border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:30px;cursor:pointer;font-size:13px;color:var(--ink)}
+nav button.on{background:var(--g7);border-color:var(--g7);color:#fff}
+main{max-width:1180px;margin:0 auto;padding:20px}
+.view{display:none}.view.on{display:block}
+h2{margin:0 0 4px;font-size:20px}
+.sub{color:var(--mut);margin:0 0 16px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.card h3{margin:0 0 10px;font-size:15px}
+.kpi .v{font-size:24px;font-weight:700;color:var(--g8)}
+.kpi .l{color:var(--mut);font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{color:var(--mut);font-weight:600;font-size:12px}
+.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.p-ok{background:var(--g2);color:var(--g8)}.p-wait{background:var(--amber1);color:#7a5200}.p-red{background:var(--red1);color:var(--red)}.p-blue{background:var(--blue1);color:var(--blue)}
+.btn{border:0;background:var(--g7);color:#fff;padding:10px 14px;border-radius:9px;font-weight:600;cursor:pointer;font-size:14px}
+.btn:hover{background:var(--g8)}
+.btn.sec{background:#fff;color:var(--g8);border:1px solid var(--g5)}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input,select{width:100%;padding:9px;border:1px solid var(--line);border-radius:8px;font-size:14px;background:#fff}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{flex:1}
+/* phone */
+.phone-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.phone{width:340px;flex:none;background:#111;border-radius:34px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.screen{background:#fff;border-radius:24px;overflow:hidden;height:640px;display:flex;flex-direction:column}
+.sbar{background:var(--g8);color:#fff;font-size:11px;padding:6px 14px;display:flex;justify-content:space-between}
+.apphead{background:var(--g7);color:#fff;padding:10px 14px}
+.apphead b{font-size:15px}
+.netrow{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-top:6px}
+.switch{position:relative;width:42px;height:22px;background:#ccc;border-radius:20px;cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--amber)}.switch.on::after{left:23px}
+.appbody{flex:1;overflow:auto;padding:12px 14px}
+.tabbar{display:flex;border-top:1px solid var(--line)}
+.tabbar button{flex:1;border:0;background:#fff;padding:9px 2px;font-size:11px;color:var(--mut);cursor:pointer}
+.tabbar button.on{color:var(--g7);font-weight:700}
+.sum{background:var(--g1);border-radius:10px;padding:10px;margin-top:10px;font-size:13px}
+.sum div{display:flex;justify-content:space-between}
+.sum .tot{font-weight:700;font-size:15px;border-top:1px dashed var(--g5);margin-top:6px;padding-top:6px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:50;max-width:90vw}
+.toast.on{opacity:1}
+.sms{background:#f1f1f1;border-radius:14px 14px 14px 4px;padding:10px 12px;font-size:12.5px;margin:8px 0;white-space:pre-line}
+.sms small{display:block;color:var(--mut);margin-top:4px;font-size:10.5px}
+.side{flex:1;min-width:280px}
+.note{background:var(--blue1);border-left:4px solid var(--blue);padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:12px}
+.list-item{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;font-size:13px}
+.list-item .t{display:flex;justify-content:space-between;font-weight:600}
+.list-item .m{color:var(--mut);font-size:12px}
+/* USSD */
+.feature{width:300px;flex:none;background:#2a2a2a;border-radius:30px;padding:16px 14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.lcd{background:#c9d8b6;border-radius:8px;height:250px;padding:10px;font-family:"Courier New",monospace;font-size:13px;color:#18230f;white-space:pre-wrap;overflow:auto;border:3px solid #111}
+.ussd-in{margin-top:6px;border-top:1px solid #8a9a77;padding-top:4px;min-height:20px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.keys button{background:#444;color:#fff;border:0;border-radius:10px;padding:10px 0;font-size:16px;cursor:pointer}
+.keys button:active{background:#666}
+.keys .call{background:#2f9467}.keys .end{background:#c2412d}
+.bar{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:12px}
+.bar .tr{flex:1;background:var(--g1);border-radius:6px;height:16px;overflow:hidden}
+.bar .fl{height:100%;background:var(--g5)}
+.bar .lb{width:90px}.bar .vl{width:110px;text-align:right;color:var(--mut)}
+.score{font-size:44px;font-weight:800;color:var(--g8);line-height:1}
+.gauge{height:10px;border-radius:10px;background:linear-gradient(90deg,#c2412d,#e2a72e,#2f9467);position:relative;margin:10px 0 4px}
+.gauge i{position:absolute;top:-5px;width:4px;height:20px;background:var(--ink);border-radius:2px}
+.factor{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px dashed var(--line)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:40}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:18px;width:min(460px,92vw)}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
+.hero{background:linear-gradient(120deg,var(--g8),var(--g5));color:#fff;border-radius:16px;padding:24px;margin-bottom:18px}
+.hero h1{margin:0 0 6px;font-size:26px}
+.hero p{margin:0;opacity:.92;max-width:760px}
+.flow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.flow div{background:rgba(255,255,255,.14);border-radius:10px;padding:8px 12px;font-size:13px}
+.uc{display:flex;gap:10px;align-items:flex-start}
+.uc .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--g2);color:var(--g8);display:flex;align-items:center;justify-content:center;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg width="38" height="38" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#2f9467"/><path d="M20 31V15" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M20 21c-6 0-9-4-9-9 6 0 9 4 9 9zM20 18c5 0 8-3.5 8-8-5 0-8 3.5-8 8z" fill="#fff"/><circle cx="20" cy="31" r="3" fill="#e2a72e"/></svg>
+    <div>FarmKɔpɔ<small>Pay farmers digitally · keep records · unlock credit</small></div>
+  </div>
+  <span class="badge-demo">PROTOTYPE · simulated data</span>
+</header>
+<nav id="nav">
+  <button data-v="overview" class="on">Overview</button>
+  <button data-v="agent">① Buyer / Agent App</button>
+  <button data-v="ussd">② Farmer USSD *384*55#</button>
+  <button data-v="coop">③ Cooperative Dashboard</button>
+  <button data-v="lender">④ Lender Portal (FarmScore)</button>
+</nav>
+<main>
+
+<!-- OVERVIEW -->
+<section class="view on" id="v-overview">
+  <div class="hero">
+    <h1>FarmKɔpɔ — digital payments & records for Sierra Leone's smallholder farmers</h1>
+    <p>An offline-first platform for cooperatives, aggregators and agri-SMEs. Buyers record each produce purchase and pay the farmer straight to Orange Money, Afrimoney or QCell QMoney. Every transaction builds the farmer's digital record and a <b>FarmScore</b> that community banks, MFIs and FSAs can use, with the farmer's consent, to offer seasonal credit.</p>
+    <div class="flow"><div>🌱 Farmer sells produce</div><div>⚖️ Agent records weight & grade (offline OK)</div><div>📲 Instant mobile-money payout + SMS receipt</div><div>💰 Auto-save a share for next season</div><div>📊 FarmScore → input loan</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>Agri DFS use cases this prototype covers</h3>
+      <div class="uc"><div class="n">a</div><div><b>Digital payments</b>: buyer-to-farmer payouts to mobile-money wallets</div></div><br>
+      <div class="uc"><div class="n">b</div><div><b>Savings</b>: a "Save-as-you-sell" nudge locks part of each payment until planting season</div></div><br>
+      <div class="uc"><div class="n">d</div><div><b>Credit scoring</b>: FarmScore built from transaction, savings and repayment data</div></div><br>
+      <div class="uc"><div class="n">f</div><div><b>Record keeping</b>: sales and input-expense history for each farmer, also on USSD</div></div><br>
+      <div class="uc"><div class="n">g</div><div><b>Digital transformation</b>: the cooperative's paper ledger becomes live data</div></div>
+    </div>
+    <div class="card">
+      <h3>How to use this demo (3 minutes)</h3>
+      <ol style="padding-left:18px;margin:0">
+        <li>Open <b>① Buyer / Agent App</b>. Switch <i>Offline mode</i> on, record a purchase, then switch it off. The queued payment syncs and the farmer gets an SMS receipt.</li>
+        <li>Open <b>② Farmer USSD</b>. Dial <code>*384*55#</code> on the feature phone to check payments, savings and FarmScore. There is a Krio menu option.</li>
+        <li>Open <b>③ Cooperative Dashboard</b> to see live totals, women's participation and volumes by crop.</li>
+        <li>Open <b>④ Lender Portal</b>. Pick a farmer who gave consent and send a loan offer. It then appears in the farmer's USSD menu.</li>
+      </ol>
+      <div class="note" style="margin-top:12px">All farmers, amounts and payouts here are <b>simulated</b>. Mobile-money and SaPS integration is planned for the pilot through MNO/aggregator APIs and the BSL regulatory sandbox.</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENT APP -->
+<section class="view" id="v-agent">
+  <h2>① Buyer / Agent App (Android, offline-first)</h2>
+  <p class="sub">Used by cooperative clerks, produce buying agents and agri-SME staff at the buying point.</p>
+  <div class="phone-wrap">
+    <div class="phone"><div class="screen">
+      <div class="sbar"><span>FarmKɔpɔ Agent</span><span id="sigTxt">4G ▂▄▆</span></div>
+      <div class="apphead"><b>Kailahun Cocoa Farmers Co-op</b><div style="font-size:12px;opacity:.85">Agent: Fatmata K. · Buying point: Pendembu</div>
+        <div class="netrow"><span id="netLbl">Online · synced</span><div class="row" style="flex:none;gap:6px"><span>Offline mode</span><div class="switch" id="offSw" role="switch" aria-checked="false" tabindex="0"></div></div></div>
+      </div>
+      <div class="appbody" id="agentBody"></div>
+      <div class="tabbar" id="agentTabs">
+        <button data-t="buy" class="on">New purchase</button><button data-t="queue">Queue <span id="qCount"></span></button><button data-t="farmers">Farmers</button><button data-t="reg">+ Register</button>
+      </div>
+    </div></div>
+    <div class="side">
+      <div class="note"><b>Offline-first:</b> rural buying points often have no data signal. Transactions are saved encrypted on the phone and sync automatically when a signal returns. The farmer still gets an SMS voucher number straight away.</div>
+      <div class="card"><h3>📩 Farmer SMS inbox (simulated)</h3><div id="smsBox"><p class="sub">SMS receipts will appear here.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- USSD -->
+<section class="view" id="v-ussd">
+  <h2>② Farmer access on any phone: USSD</h2>
+  <p class="sub">Most rural farmers use basic feature phones. No smartphone or data bundle is needed.</p>
+  <div class="phone-wrap">
+    <div class="feature">
+      <div class="row" style="margin-bottom:8px"><select id="ussdFarmer" aria-label="Simulate farmer"></select></div>
+      <div class="lcd" id="lcd"></div>
+      <div class="keys" id="keys"></div>
+    </div>
+    <div class="side">
+      <div class="card"><h3>USSD menu</h3>
+      <pre style="margin:0;font-size:13px;white-space:pre-wrap">*384*55#
+1. My payments
+2. My savings (Save-as-you-sell)
+3. My FarmScore
+4. Loan offers
+5. Record input expense
+6. Krio / English</pre></div>
+      <div class="note" style="margin-top:12px">Tip: press <b>Call</b> (green) to dial, type a menu number, then press <b>Call</b> again to send. <b>End</b> (red) closes the session. You can also type on your keyboard and press Enter.</div>
+      <div class="note">Krio menu text is a draft. It will be checked with farmer groups during user testing.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COOP -->
+<section class="view" id="v-coop">
+  <h2>③ Cooperative / Agri-SME Dashboard</h2>
+  <p class="sub">Web dashboard for cooperative managers and agribusiness buyers. Replaces paper buying books.</p>
+  <div class="grid g4" id="kpis"></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Value paid digitally by crop (NLe)</h3><div id="cropBars"></div></div>
+    <div class="card"><h3>Inclusion</h3><div id="incl"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Recent transactions</h3><div style="overflow:auto"><table id="txTable"></table></div></div>
+</section>
+
+<!-- LENDER -->
+<section class="view" id="v-lender">
+  <h2>④ Lender Portal: FarmScore</h2>
+  <p class="sub">For community banks, MFIs and FSAs. Farmers' data is only visible after they give consent on USSD.</p>
+  <div class="grid g2">
+    <div class="card"><h3>Farmer portfolio</h3><div style="overflow:auto"><table id="lendTable"></table></div></div>
+    <div class="card" id="scoreCard"><h3>Select a farmer</h3><p class="sub">Click "View" to see the FarmScore breakdown.</p></div>
+  </div>
+</section>
+</main>
+
+<div class="modal-bg" id="modal"><div class="modal" id="modalBody"></div></div>
+<div class="toast" id="toast"></div>
+<footer>FarmKɔpɔ prototype v0.3 · © 2026 AbdulTech Innovations (SL) Limited, Freetown · Built for the UNCDF / Salone Access to Finance Agri DFS Innovation Challenge · all data simulated</footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>"NLe "+Math.round(n).toLocaleString("en-US");
+const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),2600)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const CROPS={Cocoa:{p:62,unit:"kg"},Coffee:{p:38,unit:"kg"},Rice:{p:14,unit:"kg"},Cassava:{p:4,unit:"kg"},Groundnut:{p:18,unit:"kg"},Palm_oil:{p:28,unit:"litre"}};
+const cropName=c=>c.replace("_"," ");
+const WALLETS=["Orange Money","Afrimoney","QMoney"];
+let farmers=[
+ {id:"FK-0001",name:"Mariama Kamara",g:"F",phone:"076 123 451",wallet:"Orange Money",village:"Pendembu",district:"Kailahun",crop:"Cocoa",months:26,consent:true,repaid:2,late:0,save:12},
+ {id:"FK-0002",name:"Sahr Bockarie",g:"M",phone:"088 334 210",wallet:"Afrimoney",village:"Kpandebu",district:"Kailahun",crop:"Cocoa",months:18,consent:true,repaid:1,late:1,save:5},
+ {id:"FK-0003",name:"Isatu Sesay",g:"F",phone:"079 902 118",wallet:"Orange Money",village:"Makeni Rd",district:"Bombali",crop:"Rice",months:9,consent:true,repaid:0,late:0,save:15},
+ {id:"FK-0004",name:"Mohamed Conteh",g:"M",phone:"077 456 090",wallet:"QMoney",village:"Gbinti",district:"Port Loko",crop:"Cassava",months:6,consent:false,repaid:0,late:0,save:0},
+ {id:"FK-0005",name:"Hawa Koroma",g:"F",phone:"030 221 774",wallet:"Afrimoney",village:"Blama",district:"Kenema",crop:"Coffee",months:14,consent:true,repaid:1,late:0,save:10},
+ {id:"FK-0006",name:"Abu Turay",g:"M",phone:"078 645 302",wallet:"Orange Money",village:"Mile 91",district:"Tonkolili",crop:"Groundnut",months:11,consent:false,repaid:0,late:0,save:8},
+ {id:"FK-0007",name:"Kadiatu Mansaray",g:"F",phone:"099 712 556",wallet:"Orange Money",village:"Kabala",district:"Koinadugu",crop:"Rice",months:20,consent:true,repaid:2,late:1,save:20},
+ {id:"FK-0008",name:"Tamba Fillie",g:"M",phone:"088 110 487",wallet:"Afrimoney",village:"Daru",district:"Kailahun",crop:"Cocoa",months:30,consent:true,repaid:3,late:0,save:10}
+];
+let tx=[],savings={},offers={},expenses={},sms=[],seq=1040,offline=false;
+// seed history
+(function seed(){
+  const days=[42,38,35,30,27,24,20,17,14,11,9,7,5,3,2,1];
+  farmers.forEach((f,i)=>{savings[f.id]=0;expenses[f.id]=[];
+    const n=3+((i*7)%5);
+    for(let k=0;k<n;k++){const d=days[(i+k*3)%days.length];const c=CROPS[f.crop];const q=Math.round((f.crop==="Cassava"?300:f.crop==="Rice"?120:60)*(0.6+((i+k)%5)*0.2));
+      const amt=q*c.p;const sv=Math.round(amt*f.save/100);savings[f.id]+=sv;
+      tx.push({ref:"FK"+(seq++),fid:f.id,crop:f.crop,qty:q,price:c.p,grade:"A",amt,sv,date:Date.now()-d*864e5,status:"Paid",agent:"Seed"});}
+  });
+  expenses["FK-0001"].push({item:"Fertiliser (NPK) 2 bags",amt:1400},{item:"Hired labour – brushing",amt:600});
+  expenses["FK-0003"].push({item:"Rice seed 1 bushel",amt:450});
+})();
+
+/* ---------- NAV ---------- */
+function show(v){$$("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));$$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
+  if(v==="coop")renderCoop();if(v==="lender")renderLender();if(v==="ussd"&&!ussd.active)lcdIdle();
+  if(location.hash!=="#"+v)history.replaceState(null,"","#"+v);}
+$("#nav").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.v)};
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if($("#v-"+h))show(h)});
+
+/* ---------- SCORE ---------- */
+function score(f){
+  const my=tx.filter(t=>t.fid===f.id&&t.status==="Paid");
+  const vol=my.reduce((a,t)=>a+t.amt,0);
+  const sv=savings[f.id]||0;
+  const parts=[
+    ["Sales history (no. of digital sales)",Math.min(my.length*14,110)],
+    ["Income level (value sold)",Math.min(vol/400,120)],
+    ["Savings behaviour",Math.min(sv/40,90)],
+    ["Co-op membership tenure",Math.min(f.months*3,80)],
+    ["Loan repayment record",f.repaid*35-f.late*45],
+    ["Input-expense records kept",Math.min((expenses[f.id]||[]).length*15,30)]
+  ].map(([k,v])=>[k,Math.round(v)]);
+  const s=Math.max(300,Math.min(850,300+parts.reduce((a,p)=>a+p[1],0)));
+  const band=s>=650?["Low risk","p-ok"]:s>=520?["Medium risk","p-wait"]:["Building history","p-red"];
+  const limit=s>=650?Math.round(vol*0.35/100)*100:s>=520?Math.round(vol*0.2/100)*100:0;
+  return {s,parts,band,limit:Math.min(limit,15000),vol,sv,n:my.length};
+}
+
+/* ---------- AGENT APP ---------- */
+let aTab="buy";
+$("#agentTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;aTab=b.dataset.t;$$("#agentTabs button").forEach(x=>x.classList.toggle("on",x===b));renderAgent()};
+const sw=$("#offSw");
+function toggleOff(){offline=!offline;sw.classList.toggle("on",offline);sw.setAttribute("aria-checked",offline);
+  $("#sigTxt").textContent=offline?"No signal ✕":"4G ▂▄▆";
+  if(!offline){const q=tx.filter(t=>t.status==="Queued");q.forEach(t=>{t.status="Paid";payoutSms(t)});if(q.length)toast(q.length+" queued payment(s) synced and paid to farmers' wallets");}
+  netLbl();renderAgent();}
+sw.onclick=toggleOff;sw.onkeydown=e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggleOff()}};
+function netLbl(){const q=tx.filter(t=>t.status==="Queued").length;$("#netLbl").textContent=offline?("Offline · "+q+" waiting to sync"):"Online · synced";$("#qCount").textContent=q?"("+q+")":""}
+function renderAgent(){
+  const b=$("#agentBody");netLbl();
+  if(aTab==="buy"){
+    b.innerHTML=`<label>Farmer (search name / ID / scan card)</label><select id="bF">${farmers.map(f=>`<option value="${f.id}">${esc(f.name)} · ${f.id}</option>`).join("")}</select>
+    <label>Crop</label><select id="bC">${Object.keys(CROPS).map(c=>`<option>${c}</option>`).join("")}</select>
+    <div class="row"><div><label>Quantity (<span id="bU">kg</span>)</label><input id="bQ" type="number" min="1" value="50"></div><div><label>Grade</label><select id="bG"><option>A</option><option>B</option><option>C</option></select></div></div>
+    <label>Price per unit (NLe) – co-op price list</label><input id="bP" type="number" min="0" step="0.5">
+    <label>Save-as-you-sell: <b id="bSl"></b> of payment saved for planting season</label><input id="bS" type="range" min="0" max="30" step="5">
+    <div class="sum" id="bSum"></div>
+    <button class="btn" style="width:100%;margin-top:10px" id="bGo">Confirm & pay farmer</button>`;
+    const upd=()=>{const f=farmers.find(x=>x.id===$("#bF").value);const c=$("#bC").value;$("#bU").textContent=CROPS[c].unit;
+      const g={A:1,B:.9,C:.8}[$("#bG").value];const q=+$("#bQ").value||0,p=+$("#bP").value||0;const amt=q*p*g;const s=+$("#bS").value;$("#bSl").textContent=s+"%";
+      $("#bSum").innerHTML=`<div><span>Gross (${q} ${CROPS[c].unit} × ${p} × grade ${$("#bG").value})</span><span>${fmt(amt)}</span></div><div><span>To savings (${s}%)</span><span>${fmt(amt*s/100)}</span></div><div class="tot"><span>To ${esc(f.wallet)} ${esc(f.phone)}</span><span>${fmt(amt-amt*s/100)}</span></div><div style="font-size:11px;color:var(--mut);margin-top:4px">The farmer pays no fee. The buyer pays the 1.5% platform fee.</div>`};
+    const setF=()=>{const f=farmers.find(x=>x.id===$("#bF").value);$("#bC").value=f.crop;$("#bS").value=f.save;$("#bP").value=CROPS[f.crop].p;upd()};
+    $("#bF").onchange=setF;$("#bC").onchange=()=>{$("#bP").value=CROPS[$("#bC").value].p;upd()};["#bQ","#bP","#bG","#bS"].forEach(s=>$(s).oninput=upd);setF();
+    $("#bGo").onclick=()=>{const f=farmers.find(x=>x.id===$("#bF").value);const c=$("#bC").value;const g={A:1,B:.9,C:.8}[$("#bG").value];const q=+$("#bQ").value,p=+$("#bP").value;
+      if(!(q>0&&p>0)){toast("Enter quantity and price");return}
+      const amt=Math.round(q*p*g),s=+$("#bS").value,sv=Math.round(amt*s/100);f.save=s;
+      const t={ref:"FK"+(seq++),fid:f.id,crop:c,qty:q,price:p,grade:$("#bG").value,amt,sv,date:Date.now(),status:offline?"Queued":"Paid",agent:"Fatmata K."};
+      tx.unshift(t);savings[f.id]+=sv;
+      if(offline){sms.unshift({to:f,txt:`FarmKɔpɔ: Purchase recorded. ${q}${CROPS[c].unit} ${cropName(c)} = ${fmt(amt)}. Voucher ${t.ref}. Payment will reach your ${f.wallet} when the agent's phone syncs.`,t:Date.now()});toast("Saved offline. Farmer got voucher "+t.ref)}
+      else{payoutSms(t);toast("Paid "+fmt(amt-sv)+" to "+f.name)}
+      renderSms();renderAgent();}
+  }
+  if(aTab==="queue"){const q=tx.filter(t=>t.status==="Queued");
+    b.innerHTML=q.length?q.map(t=>{const f=farmers.find(x=>x.id===t.fid);return `<div class="list-item"><div class="t"><span>${esc(f.name)}</span><span>${fmt(t.amt)}</span></div><div class="m">${t.ref} · ${t.qty}${CROPS[t.crop].unit} ${cropName(t.crop)} · <span class="pill p-wait">Waiting to sync</span></div></div>`}).join("")+`<p class="sub">Switch Offline mode off to sync.</p>`:`<p class="sub" style="margin-top:20px;text-align:center">✓ Nothing waiting to sync.<br>Turn on <b>Offline mode</b> and record a purchase to test.</p>`}
+  if(aTab==="farmers"){b.innerHTML=farmers.map(f=>`<div class="list-item"><div class="t"><span>${esc(f.name)}</span><span class="pill ${f.consent?"p-ok":"p-wait"}">${f.consent?"Consent ✓":"No consent"}</span></div><div class="m">${f.id} · ${esc(f.village)}, ${esc(f.district)} · ${cropName(f.crop)} · ${esc(f.wallet)}</div></div>`).join("")}
+  if(aTab==="reg"){b.innerHTML=`<label>Full name</label><input id="rN" placeholder="e.g. Aminata Bangura"><div class="row"><div><label>Gender</label><select id="rG"><option value="F">Female</option><option value="M">Male</option></select></div><div><label>Main crop</label><select id="rC">${Object.keys(CROPS).map(c=>`<option>${c}</option>`).join("")}</select></div></div>
+    <label>Mobile number</label><input id="rP" placeholder="07x xxx xxx"><label>Wallet</label><select id="rW">${WALLETS.map(w=>`<option>${w}</option>`).join("")}</select>
+    <div class="row"><div><label>Village</label><input id="rV" placeholder="Village"></div><div><label>District</label><select id="rD">${["Kailahun","Kenema","Kono","Bo","Bombali","Tonkolili","Port Loko","Koinadugu","Moyamba","Pujehun"].map(d=>`<option>${d}</option>`).join("")}</select></div></div>
+    <label style="display:flex;gap:8px;align-items:center;color:var(--ink)"><input type="checkbox" id="rK" style="width:auto"> Farmer agrees to share records with lenders (read aloud in Krio/Mende/Temne)</label>
+    <button class="btn" style="width:100%;margin-top:10px" id="rGo">Register farmer</button>`;
+    $("#rGo").onclick=()=>{const n=$("#rN").value.trim(),p=$("#rP").value.trim();if(!n||!p){toast("Name and phone are required");return}
+      const id="FK-"+String(farmers.length+1).padStart(4,"0");farmers.push({id,name:n,g:$("#rG").value,phone:p,wallet:$("#rW").value,village:$("#rV").value||"—",district:$("#rD").value,crop:$("#rC").value,months:0,consent:$("#rK").checked,repaid:0,late:0,save:10});
+      savings[id]=0;expenses[id]=[];fillUssdFarmers();toast(n+" registered as "+id);aTab="buy";$$("#agentTabs button").forEach(x=>x.classList.toggle("on",x.dataset.t==="buy"));renderAgent();}}
+}
+function payoutSms(t){const f=farmers.find(x=>x.id===t.fid);
+  sms.unshift({to:f,txt:`${f.wallet}: You received ${fmt(t.amt-t.sv)} from Kailahun Cocoa Farmers Co-op via FarmKɔpɔ. Ref ${t.ref}.${t.sv?` ${fmt(t.sv)} saved for planting season. Savings total: ${fmt(savings[f.id])}.`:""} Dial *384*55# for your records.`,t:Date.now()});renderSms()}
+function renderSms(){$("#smsBox").innerHTML=sms.length?sms.slice(0,6).map(m=>`<div class="sms">${esc(m.txt)}<small>To ${esc(m.to.name)} · ${esc(m.to.phone)} · ${new Date(m.t).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</small></div>`).join(""):`<p class="sub">SMS receipts will appear here.</p>`}
+
+/* ---------- USSD ---------- */
+const L={en:{menu:"FarmKɔpɔ\n1.My payments\n2.My savings\n3.My FarmScore\n4.Loan offers\n5.Record expense\n6.Krio",pay:"Last payments:",sav:"Savings balance",lock:"Locked until planting season (Apr).\n1.Withdraw (emergency)\n0.Back",score:"Your FarmScore",noc:"You have not given consent.\nLenders cannot see your score.\n1.Give consent\n0.Back",off:"Loan offer",nooff:"No loan offers yet.\nKeep selling with FarmKɔpɔ to grow your score.\n0.Back",acc:"1.Accept\n2.Decline",exp:"Enter amount spent (NLe):",expi:"What for?\n1.Seed\n2.Fertiliser\n3.Labour\n4.Transport",ok:"Saved. Thank you.",bye:"Thank you for using FarmKɔpɔ."},
+       kr:{menu:"FarmKɔpɔ\n1.Mi mɔni we a gɛt\n2.Mi sev mɔni\n3.Mi FarmScore\n4.Lon fɔ mi\n5.Rayt wetin a spɛn\n6.English",pay:"Las mɔni we kam:",sav:"Yu sev mɔni",lock:"I lɔk te plant tɛm (Epril).\n1.Pul am (bad tɛm)\n0.Go bak",score:"Yu FarmScore",noc:"Yu nɔ gri yet.\nLon pipul nɔ go si yu skɔ.\n1.A gri\n0.Go bak",off:"Lon ɔfa",nooff:"No lon ɔfa yet.\nKɔntinyu fɔ sɛl wit FarmKɔpɔ.\n0.Go bak",acc:"1.A gri\n2.A nɔ gri",exp:"Rayt aw mɔch yu spɛn (NLe):",expi:"Fɔ wetin?\n1.Sid\n2.Fɛtilayza\n3.Wok-man\n4.Transpɔt",ok:"I dɔn sev. Tɛnki.",bye:"Tɛnki fɔ yuz FarmKɔpɔ."}};
+let ussd={active:false,lang:"en",state:"idle",buf:"",tmp:null};
+function fillUssdFarmers(){$("#ussdFarmer").innerHTML=farmers.map(f=>`<option value="${f.id}">📱 ${esc(f.name)} (${esc(f.phone)})</option>`).join("")}
+const curF=()=>farmers.find(f=>f.id===$("#ussdFarmer").value);
+function lcd(txt){$("#lcd").innerHTML=esc(txt)+`<div class="ussd-in">${ussd.active?"&gt; "+esc(ussd.buf)+"▌":esc(ussd.buf)||"&nbsp;"}</div>`}
+function lcdIdle(){ussd.active=false;ussd.state="idle";ussd.buf="";lcd("  Orange SL  ▂▄▆  12:40\n\n\n   Dial *384*55#\n   then press CALL")}
+const K=["1","2","3","4","5","6","7","8","9","*","0","#"];
+$("#keys").innerHTML=K.map(k=>`<button data-k="${k}">${k}</button>`).join("")+`<button class="call" data-k="call">Call</button><button data-k="del">⌫</button><button class="end" data-k="end">End</button>`;
+$("#keys").onclick=e=>{const b=e.target.closest("button");if(b)key(b.dataset.k)};
+document.addEventListener("keydown",e=>{if(!$("#v-ussd").classList.contains("on")||e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+  if(/^[0-9*#]$/.test(e.key))key(e.key);else if(e.key==="Enter")key("call");else if(e.key==="Backspace")key("del");else if(e.key==="Escape")key("end")});
+function key(k){
+  if(k==="end"){lcdIdle();return}
+  if(k==="del"){ussd.buf=ussd.buf.slice(0,-1);redraw();return}
+  if(k==="call"){
+    if(!ussd.active){if(ussd.buf.replace(/\s/g,"")==="*384*55#"){ussd.active=true;ussd.buf="";go("menu")}else{const b=ussd.buf;lcdIdle();ussd.buf=b;lcd("Invalid code.\nDial *384*55#")}return}
+    const v=ussd.buf;ussd.buf="";handle(v);return}
+  ussd.buf+=k;redraw();
+}
+let screenTxt="";
+function redraw(){if(ussd.active)lcd(screenTxt);else lcd("  Orange SL  ▂▄▆  12:40\n\n\n   "+ussd.buf)}
+function go(st,txt){ussd.state=st;const T=L[ussd.lang];const f=curF();
+  if(st==="menu")screenTxt=T.menu;
+  else if(st==="pay"){const my=tx.filter(t=>t.fid===f.id).slice().sort((a,b)=>b.date-a.date).slice(0,3);screenTxt=T.pay+"\n"+(my.map(t=>`${new Date(t.date).toLocaleDateString("en-GB",{day:"2-digit",month:"short"})} ${cropName(t.crop)} ${fmt(t.amt-t.sv)}${t.status==="Queued"?" (pending)":""}`).join("\n")||"—")+"\n0.Back"}
+  else if(st==="sav")screenTxt=`${T.sav}:\n${fmt(savings[f.id])}\n${T.lock}`;
+  else if(st==="score"){if(!f.consent)screenTxt=T.noc;else{const s=score(f);screenTxt=`${T.score}: ${s.s}\n(${s.band[0]})\nLoan limit: ${fmt(s.limit)}\nTip: save more & sell digitally to grow your score.\n0.Back`}}
+  else if(st==="off"){const o=offers[f.id];screenTxt=o&&o.status==="Sent"?`${T.off}: ${o.lender}\n${fmt(o.amt)} for ${o.term} months\nInterest ${o.rate}% flat\n${T.acc}\n0.Back`:(o?`${T.off}: ${o.status}\n0.Back`:T.nooff)}
+  else if(st==="exp")screenTxt=T.exp;
+  else if(st==="expi")screenTxt=T.expi;
+  else if(st==="msg"){screenTxt=txt+"\n\n0.Back"}
+  lcd(screenTxt)}
+function handle(v){const f=curF();const s=ussd.state;
+  if(v==="0"&&s!=="exp"){go("menu");return}
+  if(s==="menu"){({"1":()=>go("pay"),"2":()=>go("sav"),"3":()=>go("score"),"4":()=>go("off"),"5":()=>go("exp"),"6":()=>{ussd.lang=ussd.lang==="en"?"kr":"en";go("menu")}}[v]||(()=>go("menu")))();return}
+  if(s==="sav"&&v==="1"){go("msg","Emergency withdrawal request sent to co-op for approval.");return}
+  if(s==="score"&&!f.consent&&v==="1"){f.consent=true;go("msg","Consent recorded. Partner lenders can now see your FarmScore. You can withdraw consent at any time.");return}
+  if(s==="off"&&offers[f.id]&&offers[f.id].status==="Sent"&&(v==="1"||v==="2")){offers[f.id].status=v==="1"?"Accepted":"Declined";go("msg",v==="1"?"Loan accepted. The lender will disburse to your "+f.wallet+".":"Offer declined.");return}
+  if(s==="exp"){const a=+v;if(a>0){ussd.tmp=a;go("expi")}else go("exp");return}
+  if(s==="expi"){const items={"1":"Seed","2":"Fertiliser","3":"Labour","4":"Transport"};if(items[v]){expenses[f.id].push({item:items[v],amt:ussd.tmp});go("msg",L[ussd.lang].ok+"\n"+items[v]+" "+fmt(ussd.tmp))}else go("expi");return}
+  go(s)}
+$("#ussdFarmer").onchange=lcdIdle;
+
+/* ---------- COOP ---------- */
+function renderCoop(){
+  const paid=tx.filter(t=>t.status==="Paid");const val=paid.reduce((a,t)=>a+t.amt,0);const sv=Object.values(savings).reduce((a,b)=>a+b,0);
+  const women=farmers.filter(f=>f.g==="F").length;
+  $("#kpis").innerHTML=[["Registered farmers",farmers.length],["Value paid digitally",fmt(val)],["Farmer savings mobilised",fmt(sv)],["Transactions",paid.length+" ("+tx.filter(t=>t.status==="Queued").length+" queued)"]].map(([l,v])=>`<div class="card kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+  const by={};paid.forEach(t=>by[t.crop]=(by[t.crop]||0)+t.amt);const mx=Math.max(...Object.values(by),1);
+  $("#cropBars").innerHTML=Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([c,v])=>`<div class="bar"><span class="lb">${cropName(c)}</span><span class="tr"><span class="fl" style="display:block;width:${v/mx*100}%"></span></span><span class="vl">${fmt(v)}</span></div>`).join("");
+  const wv=paid.filter(t=>farmers.find(f=>f.id===t.fid).g==="F").reduce((a,t)=>a+t.amt,0);
+  const cons=farmers.filter(f=>f.consent).length;
+  $("#incl").innerHTML=`<div class="bar"><span class="lb">Women farmers</span><span class="tr"><span class="fl" style="display:block;width:${women/farmers.length*100}%"></span></span><span class="vl">${women} of ${farmers.length}</span></div>
+  <div class="bar"><span class="lb">Paid to women</span><span class="tr"><span class="fl" style="display:block;width:${wv/val*100}%"></span></span><span class="vl">${Math.round(wv/val*100)}% of value</span></div>
+  <div class="bar"><span class="lb">Credit consent</span><span class="tr"><span class="fl" style="display:block;width:${cons/farmers.length*100}%"></span></span><span class="vl">${cons} farmers</span></div>
+  <p class="sub" style="margin-top:10px">Cash not carried to buying points: <b>${fmt(val)}</b>. That means less theft risk and less agent liquidity stress.</p>`;
+  $("#txTable").innerHTML=`<tr><th>Ref</th><th>Date</th><th>Farmer</th><th>Crop</th><th>Qty</th><th>Amount</th><th>Saved</th><th>Status</th></tr>`+tx.slice().sort((a,b)=>b.date-a.date).slice(0,12).map(t=>{const f=farmers.find(x=>x.id===t.fid);return `<tr><td>${t.ref}</td><td>${new Date(t.date).toLocaleDateString("en-GB")}</td><td>${esc(f.name)}</td><td>${cropName(t.crop)}</td><td>${t.qty} ${CROPS[t.crop].unit}</td><td>${fmt(t.amt)}</td><td>${fmt(t.sv)}</td><td><span class="pill ${t.status==="Paid"?"p-ok":"p-wait"}">${t.status}</span></td></tr>`}).join("");
+}
+
+/* ---------- LENDER ---------- */
+function renderLender(){
+  $("#lendTable").innerHTML=`<tr><th>Farmer</th><th>District</th><th>FarmScore</th><th>Offer</th><th></th></tr>`+farmers.map(f=>{if(!f.consent)return `<tr><td>${f.id}</td><td>${esc(f.district)}</td><td colspan="2"><span class="pill p-wait">No consent: data hidden</span></td><td></td></tr>`;
+    const s=score(f);const o=offers[f.id];return `<tr><td>${esc(f.name)}</td><td>${esc(f.district)}</td><td><b>${s.s}</b> <span class="pill ${s.band[1]}">${s.band[0]}</span></td><td>${o?`<span class="pill ${o.status==="Accepted"?"p-ok":o.status==="Declined"?"p-red":"p-blue"}">${o.status}</span>`:"—"}</td><td><button class="btn sm sec" data-f="${f.id}">View</button></td></tr>`}).join("");
+  $("#lendTable").onclick=e=>{const b=e.target.closest("button[data-f]");if(b)scoreCard(b.dataset.f)};
+}
+function scoreCard(id){const f=farmers.find(x=>x.id===id);const s=score(f);
+  $("#scoreCard").innerHTML=`<h3>${esc(f.name)} · ${f.id}</h3><p class="sub">${esc(f.village)}, ${esc(f.district)} · ${cropName(f.crop)} · ${f.g==="F"?"Woman farmer":"Male farmer"} · member ${f.months} months</p>
+  <div class="row" style="align-items:flex-end"><div><div class="score">${s.s}</div><span class="pill ${s.band[1]}">${s.band[0]}</span></div><div style="text-align:right"><div class="l" style="color:var(--mut);font-size:12px">Suggested input-loan limit</div><div style="font-size:22px;font-weight:700">${fmt(s.limit)}</div></div></div>
+  <div class="gauge"><i style="left:${(s.s-300)/550*100}%"></i></div><div class="row" style="font-size:11px;color:var(--mut)"><span>300</span><span style="text-align:right">850</span></div>
+  <h3 style="margin-top:14px">Why this score (explainable)</h3>${s.parts.map(([k,v])=>`<div class="factor"><span>${k}</span><b style="color:${v<0?"var(--red)":"var(--g8)"}">${v>0?"+":""}${v}</b></div>`).join("")}
+  <p class="sub" style="margin-top:8px">${s.n} digital sales worth ${fmt(s.vol)} · savings ${fmt(s.sv)} · loans repaid ${f.repaid}, late ${f.late}</p>
+  ${s.limit>0?`<button class="btn" id="mkOff" style="width:100%">Send input-loan offer to farmer's phone</button>`:`<div class="note">Not enough history yet. A group-guaranteed micro-loan via the co-op is suggested.</div>`}`;
+  const b=$("#mkOff");if(b)b.onclick=()=>offerModal(f,s)}
+function offerModal(f,s){$("#modalBody").innerHTML=`<h3 style="margin-top:0">Loan offer to ${esc(f.name)}</h3><label>Lender</label><select id="oL"><option>Pendembu Community Bank</option><option>Kailahun FSA</option><option>Partner MFI</option></select>
+  <div class="row"><div><label>Amount (NLe)</label><input id="oA" type="number" value="${s.limit}" max="${s.limit}"></div><div><label>Term (months)</label><select id="oT"><option>4</option><option selected>6</option><option>9</option></select></div></div>
+  <label>Interest (% flat, illustrative)</label><input id="oR" type="number" value="8">
+  <p class="sub" style="margin-top:8px">Repayment is collected automatically from future produce payments (harvest-linked). The farmer sees the offer on USSD menu 4.</p>
+  <div class="row" style="margin-top:10px"><button class="btn sec" id="oX">Cancel</button><button class="btn" id="oS">Send offer</button></div>`;
+  $("#modal").classList.add("on");$("#oX").onclick=()=>$("#modal").classList.remove("on");
+  $("#oS").onclick=()=>{const a=Math.min(+$("#oA").value,s.limit);offers[f.id]={lender:$("#oL").value,amt:a,term:+$("#oT").value,rate:+$("#oR").value,status:"Sent"};
+    $("#modal").classList.remove("on");toast("Offer sent. Open ② Farmer USSD as "+f.name+", menu 4");renderLender();scoreCard(f.id);
+    $("#ussdFarmer").value=f.id;}}
+$("#modal").onclick=e=>{if(e.target.id==="modal")$("#modal").classList.remove("on")};
+
+/* init */
+fillUssdFarmers();renderAgent();renderSms();lcdIdle();
+const h=location.hash.slice(1);if(h&&$("#v-"+h))show(h);
+</script>
+</body>
+</html>
